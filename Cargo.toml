@@ -1,0 +1,6 @@
+[package]
+name = "convert_temps"
+version = "0.1.0"
+authors = ["Ben Lewis <benjf5+github@gmail.com>"]
+
+[dependencies]
