@@ -1,5 +1,42 @@
+use std::io;
+
 fn main() {
+    // We want to have a prompt now, instead of just falling directly to the test cases.
+    println!("Fahrenheit/Celsius converter");
+    println!("============================");
+    println!("Operations:");
+    println!("F - Convert Fahrenheit to Celsius");
+    println!("C - Convert Celsius to Fahrenheit");
+    println!("T - Run a set of basic self-test computations.");
+    println!("X - Exit.");
+
+    let mut command = String::new();
+    io::stdin().read_line(&mut command).expect("Failed to get command!");
+    command = command.trim().to_string(); // trim() returns a `&str` instead of a `String`.
+    println!("Received command: {}.", command);
+
+    interactive_from_fahrenheit();
+    interactive_from_celsius();
     run_test();
+}
+
+fn interactive_from_fahrenheit() {
+    println!("Enter a temperature in Fahrenheit:");
+
+    let mut temp = String::new();
+    io::stdin().read_line(&mut temp).expect("Failed to get temperature!");
+    let temp : f64 = temp.trim().parse().expect("Enter a number.");
+    println!("{}°F is {}°C.", temp, fahrenheit_to_celsius(temp));
+}
+
+fn interactive_from_celsius() {
+    println!("Enter a temperature in Celsius:");
+
+    let mut temp = String::new();
+    io::stdin().read_line(&mut temp).expect("Failed to get temperature!");
+    let temp : f64 = temp.trim().parse().expect("Enter a number.");
+
+    println!("{}°C is {}°F.", temp, celsius_to_fahrenheit(temp));
 }
 
 fn run_test() {
