@@ -1,23 +1,43 @@
 use std::io;
 
+const OPERATIONS : [(&str, &str); 5] = [ ( "F" , "Convert Fahrenheit to Celsius."),
+      		     	   	                 ( "C" , "Convert Celsius to Fahrenheit."),
+		     		                     ( "T" , "Run a set of basic self-test computations."),
+                                         ( "?" , "Print this message."),
+		     		                     ( "X" , "Exit." ) ];
+
+fn print_operations() {
+    println!("Operations:");
+    for operation in OPERATIONS.iter() {
+        println!("{} - {}", operation.0, operation.1);
+    }
+}
+
 fn main() {
     // We want to have a prompt now, instead of just falling directly to the test cases.
     println!("Fahrenheit/Celsius converter");
     println!("============================");
-    println!("Operations:");
-    println!("F - Convert Fahrenheit to Celsius");
-    println!("C - Convert Celsius to Fahrenheit");
-    println!("T - Run a set of basic self-test computations.");
-    println!("X - Exit.");
+    print_operations();
 
-    let mut command = String::new();
-    io::stdin().read_line(&mut command).expect("Failed to get command!");
-    command = command.trim().to_string(); // trim() returns a `&str` instead of a `String`.
-    println!("Received command: {}.", command);
-
-    interactive_from_fahrenheit();
-    interactive_from_celsius();
-    run_test();
+    loop {
+        println!("");
+        println!("Enter an operation.");
+        let mut command = String::new();
+        io::stdin().read_line(&mut command).expect("Failed to get command!");
+        let command = command.trim(); // trim() returns a `&str` instead of a `String`.
+        println!("Received command: {}.", command);
+        match command {
+            "C" => interactive_from_celsius(),
+            "F" => interactive_from_fahrenheit(),
+            "T" => run_test(),
+            "H" | "?" => print_operations(),
+            "X" => {
+                println!("Goodbye.");
+                break
+            },
+            _   => println!("Please enter a recognized command.")
+        }
+    }
 }
 
 fn interactive_from_fahrenheit() {
