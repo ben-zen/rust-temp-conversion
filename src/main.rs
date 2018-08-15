@@ -1,5 +1,12 @@
+// Implementation of a Fahrenheit-Celsius converter in Rust, at the behest
+// of the No Starch Press Rust book.
+// Copyright Ben Lewis, 2018.
+// Licensed under the MIT license.
+
 use std::io;
 
+// Move the command handling into these tuples, and make the match below into a
+// search and call operation.
 const OPERATIONS : [(&str, &str); 5] = [ ( "F" , "Convert Fahrenheit to Celsius."),
       		     	   	                 ( "C" , "Convert Celsius to Fahrenheit."),
 		     		                     ( "T" , "Run a set of basic self-test computations."),
