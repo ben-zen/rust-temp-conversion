@@ -5,18 +5,42 @@
 
 use std::io;
 
-// Move the command handling into these tuples, and make the match below into a
-// search and call operation.
-const OPERATIONS : [(&str, &str); 5] = [ ( "F" , "Convert Fahrenheit to Celsius."),
-      		     	   	                 ( "C" , "Convert Celsius to Fahrenheit."),
-		     		                     ( "T" , "Run a set of basic self-test computations."),
-                                         ( "?" , "Print this message."),
-		     		                     ( "X" , "Exit." ) ];
+struct Operation {
+    command: &'static str,
+    description: &'static str,
+    run: fn() -> bool
+}
+
+const OPERATIONS : [Operation; 5] = [ Operation { 
+                                          command: "F",
+                                          description: "Convert Fahrenheit to Celsius.",
+                                          run: || { interactive_from_fahrenheit(); true }
+                                      },
+                                      Operation {
+                                          command: "C",
+                                          description: "Convert Celsius to Fahrenheit.",
+                                          run: || { interactive_from_celsius(); true }
+                                      },
+                                      Operation {
+                                          command: "T",
+                                          description: "Run a set of basic self-test computations.",
+                                          run: || { run_test(); true }
+                                      },
+                                      Operation {
+                                          command: "?",
+                                          description: "Print this message.",
+                                          run: || { print_operations(); true }
+                                      },
+                                      Operation {
+                                          command: "X",
+                                          description: "Exit.",
+                                          run: || { false }
+                                      }];
 
 fn print_operations() {
     println!("Operations:");
     for operation in OPERATIONS.iter() {
-        println!("{} - {}", operation.0, operation.1);
+        println!("{} - {}", operation.command, operation.description);
     }
 }
 
@@ -33,18 +57,26 @@ fn main() {
         io::stdin().read_line(&mut command).expect("Failed to get command!");
         let command = command.trim(); // trim() returns a `&str` instead of a `String`.
         println!("Received command: {}.", command);
-        match command {
-            "C" => interactive_from_celsius(),
-            "F" => interactive_from_fahrenheit(),
-            "T" => run_test(),
-            "H" | "?" => print_operations(),
-            "X" => {
-                println!("Goodbye.");
-                break
-            },
-            _   => println!("Please enter a recognized command.")
+
+        let mut continue_loop = true;
+        let mut operation_found = false;
+        for operation in OPERATIONS.iter() {
+            if operation.command == command {
+                operation_found = true;
+                continue_loop = (operation.run)();
+                break;
+            }
+        }
+
+        if !operation_found {
+            println!("Please enter a recognized command.");
+        }
+
+        if !continue_loop {
+            break;
         }
     }
+    println!("Goodbye.");
 }
 
 fn interactive_from_fahrenheit() {
